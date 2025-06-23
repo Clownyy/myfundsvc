@@ -1,0 +1,147 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        Int       @id @unique @default(autoincrement())
+  login     String    @unique
+  email     String    @unique
+  password  String
+  firstName String?   @map("first_name")
+  lastName  String?   @map("last_name")
+  activated Boolean
+  roleUser  String?   @map("role_user")
+  resetKey  String?   @map("reset_key")
+  resetDate DateTime? @map("reset_date")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  billTemplates BillTemplate[]
+  cashPos CashPos[]
+  Saving Saving[]
+
+  @@map("user")
+}
+
+model SysMenu {
+  menuCode String  @id @unique
+  title    String
+  url      String
+  icon     String
+  isAdmin  Boolean
+
+  @@map("sys-menu")
+}
+
+model BillTemplate {
+  id         Int      @id @unique @default(autoincrement())
+  billName   String   @map("bill_name")
+  billAmount Decimal  @map("bill_amount")
+  type       BillType @default(MONTHLY)
+  currFreq   Int?     @map("curr_freq")
+  frequency  Int?
+  active     Boolean
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  userId     Int      @map("user_id")
+
+  user User @relation(fields: [userId], references: [id])
+  bills Bill[]
+
+  @@map("bill_template")
+}
+
+model Bill {
+  id         Int      @id @unique @default(autoincrement())
+  month      Int      @map("month")
+  year       Int      @map("year")
+  notes      String
+  paid       Boolean
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  templateId Int      @map("template_id")
+
+  template BillTemplate @relation(fields: [templateId], references: [id])
+
+  @@map("bill")
+}
+
+model Transaction {
+  id        Int             @id @unique @default(autoincrement())
+  amount    Decimal         @map("amount")
+  type      TransactionType @default(EXPENSE)
+  price     Decimal
+  category  String
+  date      DateTime        @db.Date
+  notes     String
+  createdAt DateTime        @default(now()) @map("created_at")
+  updatedAt DateTime        @updatedAt @map("updated_at")
+
+  @@map("transaction")
+}
+
+model Saving {
+  id           Int      @id @unique @default(autoincrement())
+  savingName   String   @map("saving_name")
+  amount       Decimal  @map("amount")
+  date         DateTime @db.Date
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  instrumentId Int      @map("instrument_id")
+  userId       Int      @map("user_id")
+
+  instrument Instrument @relation(fields: [instrumentId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("saving")
+}
+
+model Instrument {
+  id             Int     @id @unique @default(autoincrement())
+  instrumentCode String  @map("instrument_code")
+  instrumentName String  @map("instrument_name")
+  buyPrice       Decimal @map("buy_price")
+  sellPrice      Decimal @map("sell_price")
+
+  savings Saving[]
+
+  @@map("instrument")
+}
+
+model CashPos {
+  id        Int      @id @unique @default(autoincrement())
+  amount    Decimal  @map("amount")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  userId    Int      @map("user_id")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("cash_pos")
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+enum BillType {
+  ONCE
+  WEEKLY
+  MONTHLY
+}
+
+// npx prisma migrate dev --name "init"
+// npx prisma db seed

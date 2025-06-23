@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  solvit-engine:
+    build: .
+    image: solvit-engine:latest
+    environment: 
+      - DATABASE_URL=postgresql://solvit:Cakra123$@10.1.1.4:5432/solvit
+    ports: 
+      - "4300:4300"
