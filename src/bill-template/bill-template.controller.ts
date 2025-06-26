@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { BillTemplateService } from './bill-template.service';
 import { CreateBillTemplateDto } from './dto/create-bill-template.dto';

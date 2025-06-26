@@ -1,8 +1,8 @@
+/* eslint-disable prettier/prettier */
 import { Injectable, Logger } from '@nestjs/common';
 import { CreateBillTemplateDto } from './dto/create-bill-template.dto';
 import { UpdateBillTemplateDto } from './dto/update-bill-template.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { UserEntity } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class BillTemplateService {
@@ -10,7 +10,7 @@ export class BillTemplateService {
 
 	constructor(private prisma: PrismaService) { }
 	async create(createBillTemplateDto: CreateBillTemplateDto, user: string) {
-		let users = await this.prisma.user.findUnique({ where: { login: user } });
+		const users = await this.prisma.user.findUnique({ where: { login: user } });
 
 		if (!createBillTemplateDto.currFreq) createBillTemplateDto.currFreq = 0
 		createBillTemplateDto.userId = users.id;

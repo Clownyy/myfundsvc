@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Injectable, Logger } from '@nestjs/common';
 import { CreateBillDto } from './dto/create-bill.dto';
 import { UpdateBillDto } from './dto/update-bill.dto';
@@ -5,7 +6,6 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateTransactionDto } from 'src/transaction/dto/create-transaction.dto';
 import { CashPosEntity } from 'src/cash-pos/entities/cash-po.entity';
 import { Decimal } from '@prisma/client/runtime/library';
-import { BillTemplateEntity } from 'src/bill-template/entities/bill-template.entity';
 import { getCurrentMonth } from 'src/utils/utils';
 
 @Injectable()
@@ -44,12 +44,12 @@ export class BillService {
 	}
 
 	async disburse(id: number) {
-		let bill = await this.prisma.bill.findUnique({ where: { id }, include: { template: true } });
+		const bill = await this.prisma.bill.findUnique({ where: { id }, include: { template: true } });
 		if (bill) {
 			if (!bill.paid) {
-				let cashPos: CashPosEntity = await this.prisma.cashPos.findFirst({ where: { userId: bill.template.userId } });
+				const cashPos: CashPosEntity = await this.prisma.cashPos.findFirst({ where: { userId: bill.template.userId } });
 
-				let transaction: CreateTransactionDto = {
+				const transaction: CreateTransactionDto = {
 					amount: new Decimal(1),
 					notes: "Payment for " + bill.notes,
 					type: "EXPENSE",
@@ -67,15 +67,45 @@ export class BillService {
 	}
 
 	async generateBills(user: string) {
-		const userData = await this.prisma.user.findUnique({ where: { login: user } });
-		let billTemplate = await this.prisma.billTemplate.findMany({ where: { active: true, userId: userData.id } });
-		return this.generateBill(billTemplate);
+		return this.prisma.$transaction(async (tx) => {
+			const userData = await tx.user.findUnique({ where: { login: user } });
+			const billTemplate = await tx.billTemplate.findMany({ where: { active: true, userId: userData.id } });
+			const filtered = billTemplate.filter(bill => bill.frequency === 0 || bill.currFreq < bill.frequency);
+			for (const data of filtered) {
+				if (data.type !== 'WEEKLY') {
+					const invoiceData = await tx.bill.findFirst({ where: { templateId: data.id, paid: false } })
+					if (!invoiceData) {
+						if (data.type === "ONCE") {
+							data.active = false
+						}
+						if (data.frequency !== 0) {
+							data.currFreq = data.currFreq + 1;
+
+							if (data.currFreq === data.frequency) {
+								data.active = false
+							}
+						}
+						const createBillDto: CreateBillDto = {
+							month: new Date().getMonth() + 1,
+							year: new Date().getFullYear(),
+							notes: data.billName + " " + getCurrentMonth(1) + " " + new Date().getFullYear(),
+							paid: false,
+							templateId: data.id
+						}
+						await tx.bill.create({ data: createBillDto });
+						await tx.billTemplate.update({ where: { id: data.id }, data });
+					}
+				}
+			}
+			return filtered;
+		})
 	}
 
-	async generateBill(billTemplate: BillTemplateEntity[]) {
+	async generateBill() {
 		return this.prisma.$transaction(async (tx) => {
+			const billTemplate = await tx.billTemplate.findMany({ where: { active: true } });
 			const filtered = billTemplate.filter(bill => bill.frequency === 0 || bill.currFreq < bill.frequency);
-			for (let data of filtered) {
+			for (const data of filtered) {
 				if (data.type !== 'WEEKLY') {
 					const invoiceData = await tx.bill.findFirst({ where: { templateId: data.id, paid: false } })
 					if (!invoiceData) {

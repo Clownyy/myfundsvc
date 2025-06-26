@@ -1,8 +1,8 @@
+/* eslint-disable prettier/prettier */
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { CreateBillDto } from 'src/bill/dto/create-bill.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { extractNumber, getCurrentMonth } from 'src/utils/utils';
+import { extractNumber } from 'src/utils/utils';
 import * as cheerio from 'cheerio';
 import axios from 'axios';
 import { Decimal } from '@prisma/client/runtime/library';
@@ -17,8 +17,7 @@ export class SchedulerService {
     @Cron('0 0 10 25 * *')
     // @Cron(CronExpression.EVERY_SECOND)
     async handleCron() {
-        let billTemplate = await this.prisma.billTemplate.findMany({ where: { active: true } });
-        this.billService.generateBill(billTemplate);
+        this.billService.generateBill();
     }
 
     @Cron(CronExpression.EVERY_5_MINUTES)

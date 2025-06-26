@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { SysMenuService } from './sys-menu.service';
 import { CreateSysMenuDto } from './dto/create-sys-menu.dto';
