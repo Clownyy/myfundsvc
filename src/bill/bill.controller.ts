@@ -51,7 +51,7 @@ export class BillController {
 
 	@Post('/generate-bills')
 	@ApiCreatedResponse({ type: BillEntity, isArray: true })
-	generateBills(@CurrentUser() user) {
-		return this.billService.generateBills(user.sub);
+	async generateBills(@CurrentUser() user) {
+		return await this.billService.generateBills(user.sub);
 	}
 }

@@ -67,11 +67,12 @@ export class BillService {
 	}
 
 	async generateBills(user: string) {
-		return this.prisma.$transaction(async (tx) => {
-			const userData = await tx.user.findUnique({ where: { login: user } });
-			const billTemplate = await tx.billTemplate.findMany({ where: { active: true, userId: userData.id } });
-			const filtered = billTemplate.filter(bill => bill.frequency === 0 || bill.currFreq < bill.frequency);
-			for (const data of filtered) {
+		const userData = await this.prisma.user.findUnique({ where: { login: user } });
+		const billTemplate = await this.prisma.billTemplate.findMany({ where: { active: true, userId: userData.id } });
+		const filtered = billTemplate.filter(bill => bill.frequency === 0 || bill.currFreq < bill.frequency);
+
+		for (const data of filtered) {
+			await this.prisma.$transaction(async (tx) => {
 				if (data.type !== 'WEEKLY') {
 					const invoiceData = await tx.bill.findFirst({ where: { templateId: data.id, paid: false } })
 					if (!invoiceData) {
@@ -93,12 +94,17 @@ export class BillService {
 							templateId: data.id
 						}
 						await tx.bill.create({ data: createBillDto });
-						await tx.billTemplate.update({ where: { id: data.id }, data });
+						await tx.billTemplate.update({
+							where: { id: data.id }, data: {
+								currFreq: data.currFreq,
+								active: data.active
+							}
+						});
 					}
 				}
-			}
-			return filtered;
-		})
+			})
+		}
+		return filtered;
 	}
 
 	async generateBill() {

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Injectable, Logger } from '@nestjs/common';
 import { CreateSysMenuDto } from './dto/create-sys-menu.dto';
 import { UpdateSysMenuDto } from './dto/update-sys-menu.dto';
@@ -24,6 +25,7 @@ export class SysMenuService {
 	}
 
 	update(menuCode: string, updateSysMenuDto: UpdateSysMenuDto) {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const { id, ...data } = updateSysMenuDto as UpdateSysMenuDto & { id?: string };
 		return this.prisma.sysMenu.update({ where: { menuCode }, data: data });
 	}
@@ -34,7 +36,7 @@ export class SysMenuService {
 
 	async getMenusList(user: string) {
 		let sysMenus: SysMenuEntity[];
-		let userData = await this.prisma.user.findFirst({ where: { login: user } });
+		const userData = await this.prisma.user.findFirst({ where: { login: user } });
 
 		if (userData.roleUser.includes("F_ADMIN")) {
 			sysMenus = await this.prisma.sysMenu.findMany({ orderBy: [{ isAdmin: "asc" }, { menuCode: "asc" }] });
@@ -42,7 +44,7 @@ export class SysMenuService {
 			sysMenus = await this.prisma.sysMenu.findMany({ orderBy: [{ menuCode: "asc" }], where: { isAdmin: false } });
 		}
 
-		let result: MenuDto[] = [];
+		const result: MenuDto[] = [];
 		sysMenus.map((sysMenu: SysMenuEntity) => {
 			result.push(
 				{
