@@ -25,6 +25,9 @@ export class TransactionEntity implements Transaction {
     notes: string;
 
     @ApiProperty()
+    userId: number;
+
+    @ApiProperty()
     createdAt: Date;
 
     @ApiProperty()

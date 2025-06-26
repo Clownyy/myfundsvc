@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "TransactionType" AS ENUM ('INCOME', 'EXPENSE');
+CREATE TYPE "TransactionType" AS ENUM ('INCOME', 'EXPENSE', 'SAVING');
 
 -- CreateEnum
 CREATE TYPE "BillType" AS ENUM ('ONCE', 'WEEKLY', 'MONTHLY');
@@ -72,6 +72,7 @@ CREATE TABLE "transaction" (
     "category" TEXT NOT NULL,
     "date" DATE NOT NULL,
     "notes" TEXT NOT NULL,
+    "user_id" INTEGER NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -142,13 +143,22 @@ CREATE UNIQUE INDEX "saving_id_key" ON "saving"("id");
 CREATE UNIQUE INDEX "instrument_id_key" ON "instrument"("id");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "instrument_instrument_code_key" ON "instrument"("instrument_code");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "cash_pos_id_key" ON "cash_pos"("id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "cash_pos_user_id_key" ON "cash_pos"("user_id");
 
 -- AddForeignKey
 ALTER TABLE "bill_template" ADD CONSTRAINT "bill_template_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "bill" ADD CONSTRAINT "bill_template_id_fkey" FOREIGN KEY ("template_id") REFERENCES "bill_template"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "transaction" ADD CONSTRAINT "transaction_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "saving" ADD CONSTRAINT "saving_instrument_id_fkey" FOREIGN KEY ("instrument_id") REFERENCES "instrument"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -48,7 +48,9 @@ export class SysMenuService {
 				{
 					title: sysMenu.title,
 					url: sysMenu.url,
-					icon: sysMenu.icon
+					icon: sysMenu.icon,
+					isAdmin: sysMenu.isAdmin,
+					menuCode: sysMenu.menuCode
 				}
 			);
 		});

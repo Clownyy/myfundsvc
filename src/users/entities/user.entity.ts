@@ -27,9 +27,6 @@ export class UserEntity implements User {
     resetDate: Date;
 
     @ApiProperty()
-    language: string;
-
-    @ApiProperty()
     activated: boolean;
 
     @ApiProperty()
@@ -40,7 +37,4 @@ export class UserEntity implements User {
 
     @ApiProperty()
     updatedAt: Date;
-    
-    @ApiProperty()
-    coupleId: number;
 }

@@ -20,7 +20,7 @@ async function main() {
 
     const cashPos = await prisma.cashPos.create({
         data: {
-            amount: 1,
+            amount: 0,
             userId: user.id
         }
     })
@@ -46,6 +46,13 @@ async function main() {
                 title: 'Transaction History',
                 url: '/transaction',
                 icon: 'CreditCard',
+                isAdmin: false
+            },
+            {
+                menuCode: 'SVN',
+                title: 'Saving',
+                url: '/saving',
+                icon: 'Package',
                 isAdmin: false
             },
             {

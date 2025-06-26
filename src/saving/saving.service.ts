@@ -15,8 +15,9 @@ export class SavingService {
     return this.prisma.saving.create({ data: createSavingDto });
   }
 
-  findAll() {
-    return this.prisma.saving.findMany({ include: { instrument: true } });
+  async findAll(user: string) {
+    const userData = await this.prisma.user.findUnique({ where: { login: user } });
+    return this.prisma.saving.findMany({ include: { instrument: true }, where: { userId: userData.id } });
   }
 
   findOne(id: number) {

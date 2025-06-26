@@ -11,7 +11,7 @@ generator client {
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  // directUrl = env("DIRECT_URL")
 }
 
 model User {
@@ -30,7 +30,8 @@ model User {
 
   billTemplates BillTemplate[]
   cashPos CashPos[]
-  Saving Saving[]
+  saving Saving[]
+  transaction Transaction[]
 
   @@map("user")
 }
@@ -86,8 +87,11 @@ model Transaction {
   category  String
   date      DateTime        @db.Date
   notes     String
+  userId    Int             @map("user_id")
   createdAt DateTime        @default(now()) @map("created_at")
   updatedAt DateTime        @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
 
   @@map("transaction")
 }
@@ -110,7 +114,7 @@ model Saving {
 
 model Instrument {
   id             Int     @id @unique @default(autoincrement())
-  instrumentCode String  @map("instrument_code")
+  instrumentCode String  @map("instrument_code") @unique
   instrumentName String  @map("instrument_name")
   buyPrice       Decimal @map("buy_price")
   sellPrice      Decimal @map("sell_price")
@@ -125,7 +129,7 @@ model CashPos {
   amount    Decimal  @map("amount")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  userId    Int      @map("user_id")
+  userId    Int      @map("user_id") @unique
 
   user User @relation(fields: [userId], references: [id])
 
@@ -135,6 +139,7 @@ model CashPos {
 enum TransactionType {
   INCOME
   EXPENSE
+  SAVING
 }
 
 enum BillType {

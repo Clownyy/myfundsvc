@@ -20,8 +20,8 @@ export class SavingController {
 
   @Get('/savings')
   @ApiOkResponse({ type: SavingEntity, isArray: true })
-  findAll() {
-    return this.savingService.findAll();
+  findAll(@CurrentUser() user) {
+    return this.savingService.findAll(user.sub);
   }
 
   @Get('/savings/:id')

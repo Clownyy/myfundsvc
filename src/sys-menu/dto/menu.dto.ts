@@ -9,4 +9,10 @@ export class MenuDto {
 
     @ApiProperty()
     icon: string;
+
+    @ApiProperty()
+    isAdmin: boolean;
+
+    @ApiProperty()
+    menuCode: string;
 }

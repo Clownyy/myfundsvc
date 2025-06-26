@@ -4,6 +4,7 @@ import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { TransactionEntity } from './entities/transaction.entity';
+import { CurrentUser } from 'src/auth/decorate';
 
 @Controller('api')
 @ApiBearerAuth()
@@ -13,14 +14,14 @@ export class TransactionController {
 
   @Post('/transactions')
   @ApiCreatedResponse({ type: TransactionEntity })
-  create(@Body() createTransactionDto: CreateTransactionDto) {
-    return this.transactionService.create(createTransactionDto);
+  create(@Body() createTransactionDto: CreateTransactionDto, @CurrentUser() user) {
+    return this.transactionService.create(createTransactionDto, user.sub);
   }
 
   @Get('/transactions')
   @ApiOkResponse({ type: TransactionEntity, isArray: true })
-  findAll() {
-    return this.transactionService.findAll();
+  findAll(@CurrentUser() user) {
+    return this.transactionService.findAll(user.sub);
   }
 
   @Get('/transactions/:id')
