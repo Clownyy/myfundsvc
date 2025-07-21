@@ -14,13 +14,13 @@ export class SchedulerService {
 
     constructor(private prisma: PrismaService, private billService: BillService) { }
 
-    @Cron('0 0 10 25 * *')
+    // @Cron('0 0 10 25 * *')
     // @Cron(CronExpression.EVERY_SECOND)
     async handleCron() {
         this.billService.generateBill();
     }
 
-    @Cron(CronExpression.EVERY_5_MINUTES)
+    // @Cron(CronExpression.EVERY_5_MINUTES)
     async handleScrape() {
         this.logger.log("Scraping Gold from Indogold..");
         try {
