@@ -26,19 +26,27 @@ export class SchedulerService {
         try {
             const { data } = await axios.get('https://www.indogold.id/');
             const $ = cheerio.load(data);
+            const buyPrice = $('#basic-price')
+                .parent()
+                .find('font.size-24')
+                .eq(1)
+                .text()
+                .trim();
+
             const sellPrice = $('#basic-price')
                 .parent()
                 .find('font.size-24')
                 .eq(2)
                 .text()
                 .trim();
-
-
-            const price = extractNumber(sellPrice);
+            
+            const sell = extractNumber(sellPrice);
+            const buy = extractNumber(buyPrice);
             await this.prisma.instrument.update({
                 where: { instrumentCode: 'GOLD' },
                 data: {
-                    sellPrice: new Decimal(price),
+                    sellPrice: new Decimal(sell),
+                    buyPrice: new Decimal(buy),
                 },
             })
         } catch (error) {
