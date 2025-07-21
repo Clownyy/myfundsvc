@@ -21,6 +21,8 @@ export class BillService {
 		const userData = await this.prisma.user.findUnique({ where: { login: user } });
 		return this.prisma.bill.findMany({
 			where: {
+				month: new Date().getMonth() + 1,
+				year: new Date().getFullYear(),
 				template: {
 					userId: userData.id
 				}

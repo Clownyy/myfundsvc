@@ -19,7 +19,7 @@ export class BillTemplateService {
 
 	async findAll(user: string) {
 		const users = await this.prisma.user.findUnique({ where: { login: user } });
-		return this.prisma.billTemplate.findMany({ where: { userId: users.id } });
+		return this.prisma.billTemplate.findMany({ where: { userId: users.id, active: true } });
 	}
 
 	findOne(id: number) {
