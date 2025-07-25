@@ -17,4 +17,7 @@ export class InstrumentEntity implements Instrument {
 
     @ApiProperty()
     sellPrice: Decimal;
+    
+    createdAt: Date;
+    updatedAt: Date;
 }

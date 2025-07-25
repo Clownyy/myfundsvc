@@ -10,35 +10,41 @@ import { CurrentUser } from 'src/auth/decorate';
 @ApiBearerAuth()
 @ApiTags('savings')
 export class SavingController {
-  constructor(private readonly savingService: SavingService) {}
+	constructor(private readonly savingService: SavingService) { }
 
-  @Post('/savings')
-  @ApiCreatedResponse({ type: SavingEntity })
-  create(@Body() createSavingDto: CreateSavingDto, @CurrentUser() user) {
-    return this.savingService.create(createSavingDto, user.sub);
-  }
+	@Post('/savings')
+	@ApiCreatedResponse({ type: SavingEntity })
+	create(@Body() createSavingDto: CreateSavingDto, @CurrentUser() user) {
+		return this.savingService.create(createSavingDto, user.sub);
+	}
 
-  @Get('/savings')
-  @ApiOkResponse({ type: SavingEntity, isArray: true })
-  findAll(@CurrentUser() user) {
-    return this.savingService.findAll(user.sub);
-  }
+	@Get('/savings')
+	@ApiOkResponse({ type: SavingEntity, isArray: true })
+	findAll(@CurrentUser() user) {
+		return this.savingService.findAll(user.sub);
+	}
 
-  @Get('/savings/:id')
-  @ApiOkResponse({ type: SavingEntity })
-  findOne(@Param('id') id: string) {
-    return this.savingService.findOne(+id);
-  }
+	@Get('/savings/:id')
+	@ApiOkResponse({ type: SavingEntity })
+	findOne(@Param('id') id: string) {
+		return this.savingService.findOne(+id);
+	}
 
-  @Patch('/savings/:id')
-  @ApiOkResponse({ type: SavingEntity })
-  update(@Param('id') id: string, @Body() updateSavingDto: UpdateSavingDto) {
-    return this.savingService.update(+id, updateSavingDto);
-  }
+	@Patch('/savings/:id')
+	@ApiOkResponse({ type: SavingEntity })
+	update(@Param('id') id: string, @Body() updateSavingDto: UpdateSavingDto) {
+		return this.savingService.update(+id, updateSavingDto);
+	}
 
-  @Delete('/savings/:id')
-  @ApiOkResponse({ type: SavingEntity })
-  remove(@Param('id') id: string) {
-    return this.savingService.remove(+id);
-  }
+	@Delete('/savings/:id')
+	@ApiOkResponse({ type: SavingEntity })
+	remove(@Param('id') id: string) {
+		return this.savingService.remove(+id);
+	}
+
+	@Get('/asset')
+	@ApiOkResponse()
+	getAsset(@CurrentUser() user) {
+		return this.savingService.getAsset(user.sub);
+	}
 }
