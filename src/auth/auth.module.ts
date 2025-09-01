@@ -9,9 +9,10 @@ import { jwtConstants } from './constants';
 import { MailModule } from 'src/mail/mail.module';
 import { SchedulerService } from 'src/scheduler/scheduler.service';
 import { BillService } from 'src/bill/bill.service';
+import { StockModule } from 'src/stock/stock.module';
 
 @Module({
-    imports: [UsersModule, MailModule],
+    imports: [UsersModule, MailModule, StockModule],
     providers: [AuthService, PrismaService, UsersService, JwtService, SchedulerService, BillService],
     controllers: [AuthController],
 })

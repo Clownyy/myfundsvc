@@ -7,12 +7,13 @@ import * as cheerio from 'cheerio';
 import axios from 'axios';
 import { Decimal } from '@prisma/client/runtime/library';
 import { BillService } from 'src/bill/bill.service';
+import { StockService } from 'src/stock/stock.service';
 
 @Injectable()
 export class SchedulerService {
     private readonly logger = new Logger(SchedulerService.name);
 
-    constructor(private prisma: PrismaService, private billService: BillService) { }
+    constructor(private prisma: PrismaService, private billService: BillService, private stockService: StockService) { }
 
     // @Cron('0 0 10 25 * *')
     // @Cron(CronExpression.EVERY_SECOND)
@@ -43,12 +44,14 @@ export class SchedulerService {
             const sell = extractNumber(sellPrice);
             const buy = extractNumber(buyPrice);
             await this.prisma.instrument.update({
-                where: { instrumentCode: 'GOLD' },
+                where: { instrumentCode: 'LGM' },
                 data: {
                     sellPrice: new Decimal(sell),
                     buyPrice: new Decimal(buy),
                 },
             })
+
+            this.stockService.syncStocks();
         } catch (error) {
             this.logger.error("failed to scraping gold price", error);
         }
