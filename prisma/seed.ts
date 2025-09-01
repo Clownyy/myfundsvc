@@ -75,13 +75,13 @@ async function main() {
     const instrument = await prisma.instrument.createMany({
         data: [
             {
-                instrumentCode: 'CASH',
+                instrumentCode: 'CSH',
                 instrumentName: 'Cash',
                 buyPrice: 1,
                 sellPrice: 1
             },
             {
-                instrumentCode: 'GOLD',
+                instrumentCode: 'LGM',
                 instrumentName: 'Gold',
                 buyPrice: 1,
                 sellPrice: 1
