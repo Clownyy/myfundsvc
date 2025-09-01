@@ -36,7 +36,7 @@ export class TransactionService {
 
 	async findAll(user: string) {
 		const userData: UserEntity = await this.prisma.user.findUnique({ where: { login: user } });
-		return this.prisma.transaction.findMany({ where: { userId: userData.id } });
+		return this.prisma.transaction.findMany({ where: { userId: userData.id }, orderBy: { createdAt: 'desc' } });
 	}
 
 	findOne(id: number) {
