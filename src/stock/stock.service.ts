@@ -30,7 +30,7 @@ export class StockService {
         });
 
         this.logger.log(`Found ${res.data.values.length} stocks`);
-        const stocks = res.data.values.filter((row) => row[0] == 'BBCA' || row [0] == 'CUAN');
+        const stocks = res.data.values.filter(row => ['BBCA', 'CUAN', 'GIAA'].includes(row[0]));
         await Promise.all(
             stocks.map((stock) =>
                 this.prisma.instrument.upsert({
