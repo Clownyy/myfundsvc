@@ -6,14 +6,14 @@ import { PrismaService } from 'src/prisma/prisma.service';
 @Injectable()
 export class InstrumentService {
   private readonly logger = new Logger(InstrumentService.name);
-  constructor(private prisma: PrismaService) {}
-  
+  constructor(private prisma: PrismaService) { }
+
   create(createInstrumentDto: CreateInstrumentDto) {
     return this.prisma.instrument.create({ data: createInstrumentDto });
   }
 
   findAll() {
-    return this.prisma.instrument.findMany();
+    return this.prisma.instrument.findMany({ orderBy: { instrumentCode: 'asc' } });
   }
 
   findOne(id: number) {
