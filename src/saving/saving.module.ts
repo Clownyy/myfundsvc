@@ -6,6 +6,7 @@ import { PrismaModule } from 'src/prisma/prisma.module';
 @Module({
   controllers: [SavingController],
   providers: [SavingService],
+  exports: [SavingService],
   imports: [PrismaModule]
 })
 export class SavingModule {}

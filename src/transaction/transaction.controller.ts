@@ -41,4 +41,10 @@ export class TransactionController {
   remove(@Param('id') id: string) {
     return this.transactionService.remove(+id);
   }
+
+  @Get('/profit-loss')
+	@ApiOkResponse()
+	getProfitLoss(@CurrentUser() user) {
+		return this.transactionService.getProfitLoss(user.sub);
+	}
 }

@@ -5,11 +5,13 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { SavingEntity } from 'src/saving/entities/saving.entity';
 import { CashPosEntity } from 'src/cash-pos/entities/cash-po.entity';
 import { UserEntity } from 'src/users/entities/user.entity';
+import { TransactionType } from '@prisma/client';
+import { SavingService } from 'src/saving/saving.service';
 
 @Injectable()
 export class TransactionService {
 	private readonly logger = new Logger(TransactionService.name)
-	constructor(private prisma: PrismaService) { }
+	constructor(private prisma: PrismaService, private readonly savingService: SavingService) { }
 
 	async create(createTransactionDto: CreateTransactionDto, user: string) {
 		return this.prisma.$transaction(async (tx) => {
@@ -49,5 +51,28 @@ export class TransactionService {
 
 	remove(id: number) {
 		return this.prisma.transaction.delete({ where: { id } });
+	}
+
+	async getSavingTransaction(user: string) {
+		const userData = await this.prisma.user.findUnique({ where: { login: user } });
+		const transactionData = await this.prisma.transaction.findMany({
+			where: {
+				type: TransactionType.SAVING,
+				userId: userData.id
+			}
+		})
+
+		const total = transactionData.reduce((sum, tx) => {
+			return sum + Number(tx.amount.mul(tx.price));
+		}, 0);
+
+		return total;
+	}
+
+	async getProfitLoss(user: string) {
+		const transactionTotal = await this.getSavingTransaction(user);
+		const assetTotal = await this.savingService.getAsset(user);
+		const profitLoss = assetTotal.minus(transactionTotal);
+		return (profitLoss.div(transactionTotal)).mul(100);
 	}
 }
