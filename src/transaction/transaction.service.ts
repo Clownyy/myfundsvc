@@ -29,6 +29,9 @@ export class TransactionService {
 			} else if (type == 'INCOME') {
 				const cashPos: CashPosEntity = await tx.cashPos.findUnique({ where: { userId: createTransactionDto.userId } });
 				await tx.cashPos.update({ where: { id: cashPos.id }, data: { amount: cashPos.amount.plus(createTransactionDto.price) } });
+			} else if (type == 'SAVINGOUT') {
+				const saving: SavingEntity = await tx.saving.findUnique({ where: { id: createTransactionDto.savingId } });
+				await tx.saving.update({ where: { id: saving.id }, data: { amount: saving.amount.minus(createTransactionDto.amount) } });
 			}
 			const { savingId, ...submitTransaction } = createTransactionDto;
 			return tx.transaction.create({ data: submitTransaction });
@@ -55,18 +58,29 @@ export class TransactionService {
 
 	async getSavingTransaction(user: string) {
 		const userData = await this.prisma.user.findUnique({ where: { login: user } });
-		const transactionData = await this.prisma.transaction.findMany({
+		const savingData = await this.prisma.transaction.findMany({
 			where: {
 				type: TransactionType.SAVING,
 				userId: userData.id
 			}
 		})
 
-		const total = transactionData.reduce((sum, tx) => {
+		const savingOutData = await this.prisma.transaction.findMany({
+			where: {
+				type: TransactionType.SAVINGOUT,
+				userId: userData.id
+			}
+		})
+
+		const totalSaving = savingData.reduce((sum, tx) => {
 			return sum + Number(tx.amount.mul(tx.price));
 		}, 0);
 
-		return total;
+		const totalSavingOut = savingOutData.reduce((sum, tx) => {
+			return sum + Number(tx.amount.mul(tx.price));
+		}, 0);
+
+		return totalSaving - totalSavingOut;
 	}
 
 	async getProfitLoss(user: string) {

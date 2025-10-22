@@ -42,10 +42,10 @@ async function main() {
                 isAdmin: false
             },
             {
-                menuCode: 'TRS',
-                title: 'Transaction History',
-                url: '/transaction',
-                icon: 'CreditCard',
+                menuCode: 'PRF',
+                title: 'Profile',
+                url: '/profile',
+                icon: 'User',
                 isAdmin: false
             },
             {

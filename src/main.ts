@@ -8,7 +8,6 @@ async function bootstrap() {
 	const config = new DocumentBuilder()
 		.setTitle('My Funds Services')
 		.setDescription('My Funds Services Managed by Vitation Team')
-		// .setLicense('Vitation Team', '')
 		.setVersion('BETA')
 		.addSecurity('bearer', {
 			type: 'http',
@@ -19,8 +18,16 @@ async function bootstrap() {
 		.build();
 
 	const document = SwaggerModule.createDocument(app, config);
-	SwaggerModule.setup('', app, document);
-
+	SwaggerModule.setup('', app, document, {
+		swaggerOptions: {
+			persistAuthorization: true,
+			docExpansion: 'none',
+			url: '/api-docs'
+		}
+	});
+	app.getHttpAdapter().get('/api-docs', (req, res) => {
+		res.json(document);
+	})
 	await app.listen(4300);
 }
 bootstrap();

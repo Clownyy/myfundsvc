@@ -154,6 +154,7 @@ enum TransactionType {
   INCOME
   EXPENSE
   SAVING
+  SAVINGOUT
 }
 
 enum BillType {

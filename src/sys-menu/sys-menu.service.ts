@@ -39,9 +39,9 @@ export class SysMenuService {
 		const userData = await this.prisma.user.findFirst({ where: { login: user } });
 
 		if (userData.roleUser.includes("F_ADMIN")) {
-			sysMenus = await this.prisma.sysMenu.findMany({ orderBy: [{ isAdmin: "asc" }, { menuCode: "asc" }] });
+			sysMenus = await this.prisma.sysMenu.findMany({ orderBy: [{ isAdmin: "asc" }, { title: "asc" }] });
 		} else {
-			sysMenus = await this.prisma.sysMenu.findMany({ orderBy: [{ menuCode: "asc" }], where: { isAdmin: false } });
+			sysMenus = await this.prisma.sysMenu.findMany({ orderBy: [{ title: "asc" }], where: { isAdmin: false } });
 		}
 
 		const result: MenuDto[] = [];
