@@ -1,6 +1,6 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { $Enums } from "@prisma/client";
-import { Decimal } from "@prisma/client/runtime/library";
+import { ApiProperty } from '@nestjs/swagger';
+import { $Enums } from '@prisma/client';
+import { Decimal } from '@prisma/client/runtime/library';
 
 export class CreateTransactionDto {
     @ApiProperty()
@@ -22,7 +22,7 @@ export class CreateTransactionDto {
     notes: string;
 
     @ApiProperty()
-    savingId?: number;
+    instrumentId?: number;
 
     @ApiProperty()
     userId: number;

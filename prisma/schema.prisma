@@ -103,8 +103,10 @@ model Saving {
   date         DateTime @db.Date
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
-  instrumentId Int      @map("instrument_id")
+  instrumentId Int      @map("instrument_id") @unique
   userId       Int      @map("user_id")
+  avgPrice     Decimal? @map("avg_price")
+  totalCost    Decimal? @map("total_cost")
 
   instrument Instrument @relation(fields: [instrumentId], references: [id])
   user       User       @relation(fields: [userId], references: [id])

@@ -1,6 +1,6 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { $Enums, Transaction } from "@prisma/client";
-import { Decimal } from "@prisma/client/runtime/library";
+import { ApiProperty } from '@nestjs/swagger';
+import { $Enums, Transaction } from '@prisma/client';
+import { Decimal } from '@prisma/client/runtime/library';
 
 export class TransactionEntity implements Transaction {
     @ApiProperty()

@@ -1,13 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Saving } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
 
-export class SavingEntity implements Saving {
+export class HoldingDto {
     @ApiProperty()
     id: number;
 
     @ApiProperty()
     savingName: string;
+
+    @ApiProperty()
+    instrumentCode: string;
+
+    @ApiProperty()
+    instrumentName: string;
 
     @ApiProperty()
     amount: Decimal;
@@ -16,20 +21,8 @@ export class SavingEntity implements Saving {
     date: Date;
 
     @ApiProperty()
-    createdAt: Date;
+    profit: Decimal;
 
     @ApiProperty()
-    updatedAt: Date;
-
-    @ApiProperty()
-    instrumentId: number;
-
-    @ApiProperty()
-    userId: number;
-
-    @ApiProperty()
-    avgPrice: Decimal;
-
-    @ApiProperty()
-    totalCost: Decimal;
+    value: Decimal;
 }

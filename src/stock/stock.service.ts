@@ -11,26 +11,31 @@ export class StockService {
         const auth = new google.auth.GoogleAuth({
             credentials: {
                 client_email: process.env.GOOGLE_CLIENT_EMAIL,
-                private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
-                private_key_id: process.env.GOOGLE_PRIVATE_KEY_ID
+                private_key: process.env.GOOGLE_PRIVATE_KEY.replace(
+                    /\\n/g,
+                    '\n',
+                ),
+                private_key_id: process.env.GOOGLE_PRIVATE_KEY_ID,
             },
-            scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly']
-        })
+            scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+        });
 
-        this.sheets = google.sheets({ version: 'v4', auth })
+        this.sheets = google.sheets({ version: 'v4', auth });
     }
 
     async syncStocks() {
-        this.logger.log('Syncing stock...')
-        const spreadsheetId = "18cmXd8PxrdJyO8MZWf9XvzxO_X5Az2ObybSNCfrnwiY";
+        this.logger.log('Syncing stock...');
+        const spreadsheetId = '18cmXd8PxrdJyO8MZWf9XvzxO_X5Az2ObybSNCfrnwiY';
         const range = 'stock_dictionary!A1:C956';
         const res = await this.sheets.spreadsheets.values.get({
             spreadsheetId,
-            range
+            range,
         });
 
         this.logger.log(`Found ${res.data.values.length} stocks`);
-        const stocks = res.data.values.filter(row => ['BBCA', 'BMRI', 'GIAA'].includes(row[0]));
+        const stocks = res.data.values.filter((row) =>
+            ['BBCA', 'BMRI', 'GIAA'].includes(row[0]),
+        );
         await Promise.all(
             stocks.map((stock) =>
                 this.prisma.instrument.upsert({
@@ -48,8 +53,8 @@ export class StockService {
                         sellPrice: new Decimal(stock[2]),
                         instrumentTypeId: 1,
                     },
-                })
-            )
+                }),
+            ),
         );
     }
 }
