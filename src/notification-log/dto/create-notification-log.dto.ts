@@ -11,6 +11,7 @@ export class CreateNotificationLogDto {
     package: string;
     @ApiProperty()
     deviceId: string;
+    userId: number;
     createdAt: Date;
     updatedAt: Date;
 }

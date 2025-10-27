@@ -15,4 +15,6 @@ export class NotificationLogEntity implements NotificationLog {
     createdAt: Date;
     @ApiProperty()
     updatedAt: Date;
+    @ApiProperty()
+    userId: number;
 }

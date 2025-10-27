@@ -33,6 +33,7 @@ model User {
   cashPos       CashPos[]
   saving        Saving[]
   transaction   Transaction[]
+  notificationLogs NotificationLog[]
 
   @@map("user")
 }
@@ -159,8 +160,11 @@ model NotificationLog {
   description  String       @map("description")
   package      String       @map("package")
   deviceId     String       @map("device_id")
+  userId       Int          @unique @map("user_id")
   createdAt    DateTime     @default(now()) @map("created_at")
   updatedAt    DateTime     @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
 
   @@map("notification_log")
 }

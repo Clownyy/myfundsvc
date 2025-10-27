@@ -8,7 +8,11 @@ export class NotificationLogService {
     private readonly logger = new Logger(NotificationLogService.name);
     constructor(private prisma: PrismaService) {}
 
-    create(createNotificationLogDto: CreateNotificationLogDto) {
+    async create(createNotificationLogDto: CreateNotificationLogDto) {
+        const user = await this.prisma.user.findFirst({
+            where: { deviceId: createNotificationLogDto.deviceId },
+        });
+        createNotificationLogDto.userId = user.id;
         return this.prisma.notificationLog.create({
             data: createNotificationLogDto,
         });
