@@ -4,16 +4,24 @@ import { AuthController } from './auth.controller';
 import { UsersModule } from '../users/users.module';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UsersService } from 'src/users/users.service';
-import { JwtModule, JwtService } from '@nestjs/jwt';
-import { jwtConstants } from './constants';
+import { JwtService } from '@nestjs/jwt';
 import { MailModule } from 'src/mail/mail.module';
 import { SchedulerService } from 'src/scheduler/scheduler.service';
 import { BillService } from 'src/bill/bill.service';
 import { StockModule } from 'src/stock/stock.module';
+import { NotificationLogService } from 'src/notification-log/notification-log.service';
 
 @Module({
     imports: [UsersModule, MailModule, StockModule],
-    providers: [AuthService, PrismaService, UsersService, JwtService, SchedulerService, BillService],
+    providers: [
+        AuthService,
+        PrismaService,
+        UsersService,
+        JwtService,
+        SchedulerService,
+        BillService,
+        NotificationLogService,
+    ],
     controllers: [AuthController],
 })
-export class AuthModule { }
+export class AuthModule {}

@@ -25,6 +25,7 @@ model User {
   roleUser  String?   @map("role_user")
   resetKey  String?   @map("reset_key")
   resetDate DateTime? @map("reset_date")
+  deviceId  String?   @map("device_id")
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
 
@@ -150,6 +151,18 @@ model InstrumentType {
   instrument Instrument[]
 
   @@map("instrument_type")
+}
+
+model NotificationLog {
+  id           Int          @id @unique @default(autoincrement())
+  title        String       @map("title")
+  description  String       @map("description")
+  package      String       @map("package")
+  deviceId     String       @map("device_id")
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+
+  @@map("notification_log")
 }
 
 enum TransactionType {

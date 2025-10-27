@@ -19,11 +19,12 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { SchedulerModule } from './scheduler/scheduler.module';
 import { CashPosModule } from './cash-pos/cash-pos.module';
 import { StockModule } from './stock/stock.module';
+import { NotificationLogModule } from './notification-log/notification-log.module';
 
 @Module({
   imports: [ScheduleModule.forRoot(), PrismaModule, UsersModule, AuthModule, JwtModule, MailModule, ConfigModule.forRoot({
     isGlobal: true,
-  }), SysMenuModule, BillTemplateModule, BillModule, TransactionModule, SavingModule, InstrumentModule, SchedulerModule, CashPosModule, StockModule],
+  }), SysMenuModule, BillTemplateModule, BillModule, TransactionModule, SavingModule, InstrumentModule, SchedulerModule, CashPosModule, StockModule, NotificationLogModule],
   controllers: [AppController],
   providers: [AppService, {
     provide: APP_GUARD,
