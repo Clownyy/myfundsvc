@@ -160,7 +160,7 @@ model NotificationLog {
   description  String       @map("description")
   package      String       @map("package")
   deviceId     String       @map("device_id")
-  userId       Int          @unique @map("user_id")
+  userId       Int          @map("user_id")
   createdAt    DateTime     @default(now()) @map("created_at")
   updatedAt    DateTime     @updatedAt @map("updated_at")
 
