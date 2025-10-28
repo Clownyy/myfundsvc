@@ -1,8 +1,21 @@
 export function getCurrentMonth(offset: number = 0) {
     const date = new Date();
 
-    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    let month = date.getMonth() + offset;
+    const monthNames = [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December',
+    ];
+    const month = date.getMonth() + offset;
     return monthNames[month];
 }
 

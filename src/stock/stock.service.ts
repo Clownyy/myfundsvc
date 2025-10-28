@@ -26,16 +26,14 @@ export class StockService {
     async syncStocks() {
         this.logger.log('Syncing stock...');
         const spreadsheetId = '18cmXd8PxrdJyO8MZWf9XvzxO_X5Az2ObybSNCfrnwiY';
-        const range = 'stock_dictionary!A1:C956';
+        const range = 'stock_dictionary!A97:C97';
         const res = await this.sheets.spreadsheets.values.get({
             spreadsheetId,
             range,
         });
 
         this.logger.log(`Found ${res.data.values.length} stocks`);
-        const stocks = res.data.values.filter((row) =>
-            ['BBCA', 'BMRI', 'GIAA'].includes(row[0]),
-        );
+        const stocks = res.data.values;
         await Promise.all(
             stocks.map((stock) =>
                 this.prisma.instrument.upsert({
